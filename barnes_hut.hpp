@@ -1,5 +1,7 @@
+#include <cmath>
 #include "body.hpp"
 
+struct node_t;
 void add_body(node_t*, const body_t*, const point_t, const point_t);
 
 const void *NULLPTR = (void*)0;

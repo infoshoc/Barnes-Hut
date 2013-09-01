@@ -8,7 +8,6 @@ void add_body(node_t*, const body_t*, const point_t, const point_t);
 
 const void *NULLPTR = (void*)0;
 
-const int MAX_BODIES_NUMBER = 42;
 const int CHILDREN_NUMBER = 4;
 const int BORDERS_NUMBER = 3;
 const coord_t THETA = 0.5;

@@ -1,3 +1,5 @@
+#pragma once
+
 typedef double coord_t;
 
 struct point_t{

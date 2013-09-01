@@ -1,12 +1,14 @@
+#pragma once
+
 #include "point.hpp"
 
 typedef double mass_t;
 typedef double force_t;
 typedef point_t speed_t;
 typedef point_t acceleration_t;
-typedef double time_t;
+typedef double duration_t;
 
-const time_t MOVEMENT_TIME = 42.0;
+const duration_t MOVEMENT_TIME = 42.0;
 const coord_t EPS = 1e-9;
 const force_t GRAVITATIONAL_CONSTANT = 6.67384e-11;
 
@@ -22,7 +24,7 @@ inline point_t get_force ( const body_t &a, const body_t &b ){
     return GRAVITATIONAL_CONSTANT * a.mass * b.mass / direction.length2() / direction.length() * direction;
 }
 
-void move_body( body_t &body, speed_t &speed, const point_t &force, const time_t time = MOVEMENT_TIME ){
+void move_body( body_t &body, speed_t &speed, const point_t &force, const duration_t time = MOVEMENT_TIME ){
     acceleration_t acceleration = force / body.mass;
     body += time * ( speed + time / 2.0 * acceleration );
     speed += time * acceleration;

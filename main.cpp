@@ -8,11 +8,15 @@ enum PARAMETER_INDEX{FILE_NAME, STEPS_NUMER};
 const string PARAMETER_NAME[CMD_PARAMETER_NUMBER] = { "-file", "-steps_number" };
 string parameter_value[CMD_PARAMETER_NUMBER] = { "input.dat", "42" };
 
-int main( int argc, string argv[] ){
+const int MAX_BODIES_NUMBER = 42;
+body_t bodies[MAX_BODIES_NUMBER];
+
+int main( int argc, char **argv ){
 
     for ( int arg_i = 1; arg_i < argc-1; ++arg_i ){
+        string argument = argv[arg_i];
         for ( int parameter_i = 0; parameter_i < CMD_PARAMETER_NUMBER; ++parameter_i ){
-            if ( PARAMETER_NAME[parameter_i] == argv[arg_i] ){
+            if ( PARAMETER_NAME[parameter_i] == argument ){
                 parameter_value[parameter_i] = argv[arg_i+1];
                 break;
             }
@@ -30,8 +34,8 @@ int main( int argc, string argv[] ){
         return 2;
     }
     for ( unsigned int i = 0; i < body_number; ++i ){
-        double mass, x, y;
-        if ( scanf ( "%lf %lf %lf ", &mass, &x, &y ) != 3 ){
+
+        if ( scanf ( "%lf %lf %lf ", &bodies[i].mass, &bodies[i].x, &bodies[i].y ) != 3 ){
             printf ( "Body #%u not found\n", i+1 );
             return 3;
         }

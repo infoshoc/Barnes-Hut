@@ -32,7 +32,11 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="barnes_hut.hpp" />
+		<Unit filename="body.hpp" />
+		<Unit filename="input.dat" />
 		<Unit filename="main.cpp" />
+		<Unit filename="point.hpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

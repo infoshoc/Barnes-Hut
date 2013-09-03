@@ -3,15 +3,20 @@
 #include <cmath>
 #include "body.hpp"
 
+/*API*/
+void build(body_t*, unsigned int, point_t, point_t);
+
 const int CHILDREN_NUMBER = 4;
 const int BORDERS_NUMBER = 30042;
 const coord_t THETA = 0.5;
-const int MAX_BODIES_NUMBER = 30042;
+const unsigned int MAX_BODIES_NUMBER = 30042;
 
 struct node_t : public body_t{
     bool is_empty;
     bool is_body;
 } tree[16*MAX_BODIES_NUMBER]; //possibly (16*MAX_BODIES_NUMBER-1)/3
+
+const int TREE_ROOT = 1;
 
 void add_body ( const int, const body_t&, const point_t, const point_t ) ;
 void push_to_children(const int node_idx, const body_t &body, const point_t &min, const point_t &max){
@@ -69,4 +74,10 @@ point_t calculate_force( const int node_idx, const body_t &body, const coord_t &
         result += calculate_force( (node_idx<<1)+i, body, size/2.0 );
     }
     return result;
+}
+
+void build ( body_t *bodies, unsigned int bodies_number, point_t min_point, point_t max_point ){
+    for ( unsigned int i = 0; i < bodies_number; ++i ){
+        add_body(TREE_ROOT, bodies[i], min_point, max_point );
+    }
 }

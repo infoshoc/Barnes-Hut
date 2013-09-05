@@ -1,13 +1,16 @@
 #pragma once
 
 #include <cmath>
+#include <algorithm>
+#include <cstring>
 #include "body.hpp"
+using namespace std;
 
 /*API*/
 void build(body_t*, unsigned int, point_t, point_t);
 
 const int CHILDREN_NUMBER = 4;
-const int BORDERS_NUMBER = 30042;
+const int BORDERS_NUMBER = 3;
 const coord_t THETA = 0.5;
 const unsigned int MAX_BODIES_NUMBER = 30042;
 
@@ -43,7 +46,13 @@ void add_body(const int node_idx, const body_t &body, const point_t min, const p
     if ( body.x < min.x || body.x > max.x || body.y < min.y || body.y > max.y ){
         return;
     }
+
     node_t &node = tree[node_idx];
+    if ( node.mass < EPS ){
+        memcpy ( &node, &body, sizeof(body_t) );
+        node.is_body = true;
+        return;
+    }
     node.x *= node.mass;
     node.y *= node.mass;
     node.x += body.x * body.mass;
@@ -51,12 +60,6 @@ void add_body(const int node_idx, const body_t &body, const point_t min, const p
     node.mass += body.mass;
     node.x /= node.mass;
     node.y /= node.mass;
-
-    if ( node.is_empty ){
-        node.is_body = true;
-        node.is_empty = false;
-        return;
-    }
     if ( node.is_body  ){
         push_to_children( node_idx, node, min, max );
         node.is_body = false;
@@ -77,6 +80,7 @@ point_t calculate_force( const int node_idx, const body_t &body, const coord_t &
 }
 
 void build ( body_t *bodies, unsigned int bodies_number, point_t min_point, point_t max_point ){
+    memset ( tree, 0, sizeof(node_t) * ( 16 * bodies_number ) );
     for ( unsigned int i = 0; i < bodies_number; ++i ){
         add_body(TREE_ROOT, bodies[i], min_point, max_point );
     }

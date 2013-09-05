@@ -28,12 +28,12 @@ int main( int argc, char **argv ){
         return 2;
     }
 
+    /*Input file read*/
     if ( fscanf ( fh, "%lf ", &space_radius ) != 1 ){
         printf ( "Space radius not found\n" );
         return 3;
     }
 
-    point_t min_point = { -space_radius, -space_radius }, max_point = { space_radius, space_radius };
     for ( unsigned int i = 0; i < bodies_number; ++i ){
         static int red, green, blue;
         if ( fscanf (
@@ -47,8 +47,11 @@ int main( int argc, char **argv ){
             printf ( "Full information about body #%d not found\n", i+1 );
             return 4;
         }
-        add_body ( 1, bodies[i], min_point, max_point );
     }
+
+    /*Tree building*/
+    point_t min_point = { -space_radius, -space_radius }, max_point = { space_radius, space_radius };
+    build(bodies, bodies_number, min_point, max_point );
 
     /*Emulation*/
 

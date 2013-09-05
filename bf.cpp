@@ -47,6 +47,6 @@ int main(int argc, char **argv){
             }
             forces[i] = forces[i] + (mass[i] * mass[j] / length2(position[j]-position[i])) * direction(position[j]-position[i]);
         }
-        printf ( "#%u: (%lf; %lf)\n", i+1, forces[i].x, forces[i].y );
+        printf ( "Body #%u: force: (%lf; %lf)\n", i+1, forces[i].x, forces[i].y );
     }
 }

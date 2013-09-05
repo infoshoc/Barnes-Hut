@@ -20,11 +20,14 @@ struct node_t : public body_t{
 } tree[16*MAX_BODIES_NUMBER]; //possibly (16*MAX_BODIES_NUMBER-1)/3
 
 const int TREE_ROOT = 1;
+inline unsigned int child_begin ( const unsigned int idx ){
+    return (idx << 2) - 2;
+}
 
 void add_body ( const int, const body_t&, const point_t, const point_t ) ;
 void push_to_children(const int node_idx, const body_t &body, const point_t &min, const point_t &max){
     point_t point[3] = { min, {(min.x+max.x)/2.0,(min.y+max.y)/2.0}, max };
-    for ( int y_idx = 1, child_idx = node_idx<<2; y_idx < BORDERS_NUMBER; ++y_idx ){
+    for ( int y_idx = 1, child_idx = child_begin(node_idx); y_idx < BORDERS_NUMBER; ++y_idx ){
         for ( int x_idx = 1; x_idx < BORDERS_NUMBER; ++x_idx, ++child_idx ){
             add_body(
                      child_idx,
@@ -67,14 +70,17 @@ void add_body(const int node_idx, const body_t &body, const point_t min, const p
     push_to_children(node_idx, body, min, max );
 }
 
-point_t calculate_force( const int node_idx, const body_t &body, const coord_t &size ){
+force_t calculate_force( const int node_idx, const body_t &body, const coord_t &size ){
     node_t &node = tree[node_idx];
-    if ( node.is_body || size / (node-body).length() < THETA ){
+    if ( node.mass < EPS || (body-node).length2() < EPS ){
+        return {0.0, 0.0};
+    }
+    if ( node.is_body || fabs(size / (node-body).length()) < THETA ){
         return get_force(body, node);
     }
-    point_t result = {0.0, 0.0};
+    force_t result = {0.0, 0.0};
     for ( int i = 0; i < CHILDREN_NUMBER; ++i ){
-        result += calculate_force( (node_idx<<2)+i, body, size/2.0 );
+        result += calculate_force( child_begin(node_idx)+i, body, size/2.0 );
     }
     return result;
 }

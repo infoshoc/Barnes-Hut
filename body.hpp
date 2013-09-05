@@ -9,7 +9,7 @@ typedef point_t acceleration_t;
 typedef double duration_t;
 
 const coord_t EPS = 1e-9;
-const double GRAVITATIONAL_CONSTANT = 6.67384e-11;
+const double GRAVITATIONAL_CONSTANT = 1;//6.67384e-11;
 
 struct body_t : public point_t{
     mass_t mass;

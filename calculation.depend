@@ -4,14 +4,28 @@
 	<string>
 	"barnes_hut.hpp"
 
-1378393401 c:\man\13-14\barnes-hut\calculation\barnes_hut.hpp
+1378398883 c:\man\13-14\barnes-hut\calculation\barnes_hut.hpp
 	<cmath>
 	<algorithm>
 	<cstring>
 	"body.hpp"
 
-1378393444 c:\man\13-14\barnes-hut\calculation\body.hpp
+1378398189 c:\man\13-14\barnes-hut\calculation\body.hpp
 	"point.hpp"
 
 1378056306 c:\man\13-14\barnes-hut\calculation\point.hpp
+
+1378397150 source:c:\man\13-14\barnes-hut\calculation\barnes_hut.cpp
+	<cstdio>
+	"barnes_hut.hpp"
+	"rw.hpp"
+
+1378395260 c:\man\13-14\barnes-hut\calculation\rw.hpp
+	<cstdio>
+	<string>
+	"body.hpp"
+
+1378399869 source:c:\man\13-14\barnes-hut\calculation\bf.cpp
+	<cstdio>
+	<cmath>
 

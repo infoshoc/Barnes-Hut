@@ -1,16 +1,16 @@
 # depslib dependency file v1.0
-1378387859 source:c:\man\13-14\barnes-hut\calculation\main.cpp
+1378393771 source:c:\man\13-14\barnes-hut\calculation\main.cpp
 	<cstdio>
 	<string>
 	"barnes_hut.hpp"
 
-1378388485 c:\man\13-14\barnes-hut\calculation\barnes_hut.hpp
+1378393401 c:\man\13-14\barnes-hut\calculation\barnes_hut.hpp
 	<cmath>
 	<algorithm>
 	<cstring>
 	"body.hpp"
 
-1378229449 c:\man\13-14\barnes-hut\calculation\body.hpp
+1378393444 c:\man\13-14\barnes-hut\calculation\body.hpp
 	"point.hpp"
 
 1378056306 c:\man\13-14\barnes-hut\calculation\point.hpp

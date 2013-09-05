@@ -5,7 +5,7 @@ using namespace std;
 
 body_t bodies[MAX_BODIES_NUMBER];
 speed_t speed[MAX_BODIES_NUMBER];
-force_t force[MAX_BODIES_NUMBER];
+force_t forces[MAX_BODIES_NUMBER];
 
 int main( int argc, char **argv ){
 
@@ -53,7 +53,29 @@ int main( int argc, char **argv ){
     point_t min_point = { -space_radius, -space_radius }, max_point = { space_radius, space_radius };
     build(bodies, bodies_number, min_point, max_point );
 
+    /*Information*/
+    /*int max_i = 1;
+    for ( int i = 1; i <= max_i; ++i ){
+        printf ( "Node #%d", i );
+        if ( tree[i].mass < EPS ){
+            printf ( "is empty\n");
+            continue;
+        }
+        max_i = max ( max_i, (i<<2)+3 );
+        printf ( ":\n\tPosition: (%lf;%lf)\n\tMass: %lf\n\t", tree[i].x, tree[i].y, tree[i].mass );
+        if ( tree[i].is_body ){
+            printf ( "It's body\n" );
+        }
+    }*/
+
     /*Emulation*/
+    calculate(bodies, bodies_number, forces, min_point, max_point);
+    file_name = argc >= 3 ? argv[2] : "output.txt";
+    fh = fopen(file_name.c_str(), "w");
+    for ( unsigned int i = 0; i < bodies_number; ++i ){
+        fprintf ( fh, "Body #%u: force:(%lf; %lf)\n", i+1, forces[i].x, forces[i].y );
+    }
+    fclose(fh);
 
     return 0;
 }

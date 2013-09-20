@@ -17,20 +17,19 @@ const unsigned int MAX_BODIES_NUMBER = 30042;
 
 struct node_t : public body_t{
     bool is_body;
-} tree[16*MAX_BODIES_NUMBER]; //possibly (16*MAX_BODIES_NUMBER-1)/3
+    node_t* child[CHILDREN_NUMBER];
+} *root = new node_t; //possibly (16*MAX_BODIES_NUMBER-1)/3
 
-const int TREE_ROOT = 1;
-inline unsigned int child_begin ( const unsigned int idx ){
-    return (idx << 2) - 2;
-}
-
-void add_body ( const int, const body_t&, const point_t, const point_t ) ;
-void push_to_children(const int node_idx, const body_t &body, const point_t &min, const point_t &max){
+void add_body ( node_t *, const body_t&, const point_t, const point_t ) ;
+void push_to_children(node_t *node, const body_t &body, const point_t &min, const point_t &max){
     point_t point[3] = { min, {(min.x+max.x)/2.0,(min.y+max.y)/2.0}, max };
-    for ( int y_idx = 1, child_idx = child_begin(node_idx); y_idx < BORDERS_NUMBER; ++y_idx ){
+    for ( int y_idx = 1, child_idx = 0; y_idx < BORDERS_NUMBER; ++y_idx ){
         for ( int x_idx = 1; x_idx < BORDERS_NUMBER; ++x_idx, ++child_idx ){
+            if ( node->child[child_idx] == NULL ){
+                node->child[child_idx] = new node_t();
+            }
             add_body(
-                     child_idx,
+                     node->child[child_idx],
                      body,
                      {
                          point[x_idx-1].x,
@@ -45,33 +44,31 @@ void push_to_children(const int node_idx, const body_t &body, const point_t &min
     }
 }
 
-void add_body(const int node_idx, const body_t &body, const point_t min, const point_t max){
+void add_body(node_t *node, const body_t &body, const point_t min, const point_t max){
     if ( body.x < min.x || body.x > max.x || body.y < min.y || body.y > max.y ){
         return;
     }
 
-    node_t& node = tree[node_idx];
-    if ( node.mass < EPS ){
-        memcpy ( &node, &body, sizeof(body_t) );
-        node.is_body = true;
+    if ( node->mass < EPS ){
+        memcpy ( node, &body, sizeof(body_t) );
+        node->is_body = true;
         return;
     }
-    if ( node.is_body  ){
-        push_to_children( node_idx, node, min, max );
-        node.is_body = false;
+    if ( node->is_body ){
+        push_to_children( node, *node, min, max );
+        node->is_body = false;
     }
-    node.x *= node.mass;
-    node.y *= node.mass;
-    node.x += body.x * body.mass;
-    node.y += body.y * body.mass;
-    node.mass += body.mass;
-    node.x /= node.mass;
-    node.y /= node.mass;
-    push_to_children(node_idx, body, min, max );
+    node->x *= node->mass;
+    node->y *= node->mass;
+    node->x += body.x * body.mass;
+    node->y += body.y * body.mass;
+    node->mass += body.mass;
+    node->x /= node->mass;
+    node->y /= node->mass;
+    push_to_children(node, body, min, max );
 }
 
-force_t calculate_force( const int node_idx, const body_t &body, const coord_t &size ){
-    node_t &node = tree[node_idx];
+force_t calculate_force( const node_t node, const body_t &body, const coord_t &size ){
     if ( node.mass < EPS || (body-node).length2() < EPS ){
         return {0.0, 0.0};
     }
@@ -80,20 +77,20 @@ force_t calculate_force( const int node_idx, const body_t &body, const coord_t &
     }
     force_t result = {0.0, 0.0};
     for ( int i = 0; i < CHILDREN_NUMBER; ++i ){
-        result += calculate_force( child_begin(node_idx)+i, body, size/2.0 );
+        result += calculate_force( *node.child[i], body, size/2.0 );
     }
     return result;
 }
 
 void build ( body_t *bodies, const unsigned int bodies_number, const point_t min_point, const point_t max_point ){
-    memset ( tree, 0, sizeof(node_t) * ( 16 * bodies_number ) );
+    memset(root, 0, sizeof(node_t));
     for ( unsigned int i = 0; i < bodies_number; ++i ){
-        add_body(TREE_ROOT, bodies[i], min_point, max_point );
+        add_body(root, bodies[i], min_point, max_point );
     }
 }
 void calculate( const body_t *bodies, const unsigned int bodies_number, force_t *forces, const point_t min_point, const point_t max_point ){
     static coord_t size = min_point.x - max_point.x;
     for ( unsigned int i = 0; i < bodies_number; ++i ){
-        forces[i] = calculate_force(TREE_ROOT, bodies[i], size );
+        forces[i] = calculate_force(*root, bodies[i], size );
     }
 }

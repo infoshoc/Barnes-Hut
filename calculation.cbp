@@ -11,6 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="test2.txt" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -20,6 +21,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="test2.txt" />
 				<Compiler>
 					<Add option="-O2" />
 				</Compiler>
@@ -33,9 +35,10 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="barnes_hut.hpp" />
+		<Unit filename="bf.cpp" />
 		<Unit filename="body.hpp" />
-		<Unit filename="main.cpp" />
 		<Unit filename="point.hpp" />
+		<Unit filename="rw.hpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

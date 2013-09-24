@@ -34,6 +34,10 @@ int main( int argc, char **argv ){
     /*Emulation*/
     calculate(bodies, bodies_number, forces, min_point, max_point);
 
+    for ( unsigned int i = 0; i < bodies_number; ++i ){
+        move_body(bodies[i], speed[i], forces[i], 0.42);
+    }
+
     write_forces ( argc, argv, bodies_number, forces );
 
     return 0;

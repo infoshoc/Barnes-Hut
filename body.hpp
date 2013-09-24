@@ -25,6 +25,6 @@ inline force_t get_force ( const body_t &a, const body_t &b ){
 
 void move_body( body_t &body, speed_t &speed, const point_t &force, duration_t time ){
     acceleration_t acceleration = force / body.mass;
-    body += time * ( speed + time / 2.0 * acceleration );
+    body += time * ( speed + 0.5 * time * acceleration );
     speed += time * acceleration;
 }

@@ -44,7 +44,7 @@ void write_forces( const int argc, char *argv[], const unsigned int bodies_numbe
     string file_name = argc >= 3 ? argv[2] : "output.txt";
     FILE *fh = fopen(file_name.c_str(), "w");
     for ( unsigned int i = 0; i < bodies_number; ++i ){
-        fprintf ( fh, "Body #%u: force:(%lf; %lf)\n", i+1, forces[i].x, forces[i].y );
+        fprintf ( fh, "Body #%u: force: (%f; %f)\n", i+1, forces[i].x, forces[i].y );
     }
     fclose(fh);
 }

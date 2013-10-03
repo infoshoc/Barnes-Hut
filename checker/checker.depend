@@ -1,6 +1,7 @@
 # depslib dependency file v1.0
-1380034343 source:c:\man\13-14\barnes-hut\calculation\checker\checker.cpp
+1380821046 source:c:\man\13-14\barnes-hut\calculation\checker\checker.cpp
 	<cstdio>
 	<cmath>
 	<ctgmath>
+	<cstdlib>
 

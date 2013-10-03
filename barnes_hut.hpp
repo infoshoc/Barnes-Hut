@@ -12,7 +12,7 @@ void calculate(const body_t*, const unsigned int, force_t*, const point_t, const
 
 const int CHILDREN_NUMBER = 4;
 const int BORDERS_NUMBER = 3;
-const coord_t THETA = 0.2;
+const coord_t THETA = 0.01;
 const unsigned int MAX_BODIES_NUMBER = 30042;
 
 struct node_t : public body_t{
@@ -20,7 +20,7 @@ struct node_t : public body_t{
     node_t* child[CHILDREN_NUMBER];
 } *root = new node_t; //possibly (16*MAX_BODIES_NUMBER-1)/3
 
-void add_body ( node_t *, const body_t&, const point_t, const point_t ) ;
+bool add_body ( node_t *, const body_t&, const point_t, const point_t ) ;
 void push_to_children(node_t *node, const body_t &body, const point_t &min, const point_t &max){
     point_t point[3] = { min, {(min.x+max.x)/2.0,(min.y+max.y)/2.0}, max };
     for ( int y_idx = 1, child_idx = 0; y_idx < BORDERS_NUMBER; ++y_idx ){
@@ -28,7 +28,7 @@ void push_to_children(node_t *node, const body_t &body, const point_t &min, cons
             if ( node->child[child_idx] == NULL ){
                 node->child[child_idx] = new node_t();
             }
-            add_body(
+            if ( add_body(
                      node->child[child_idx],
                      body,
                      {
@@ -39,20 +39,22 @@ void push_to_children(node_t *node, const body_t &body, const point_t &min, cons
                          point[x_idx].x,
                          point[y_idx].y
                      }
-            );
+            ) ) {
+                return;
+            }
         }
     }
 }
 
-void add_body(node_t *node, const body_t &body, const point_t min, const point_t max){
+bool add_body(node_t *node, const body_t &body, const point_t min, const point_t max){
     if ( body.x < min.x || body.x > max.x || body.y < min.y || body.y > max.y ){
-        return;
+        return false;
     }
 
     if ( node->mass < EPS ){
         memcpy ( node, &body, sizeof(body_t) );
         node->is_body = true;
-        return;
+        return true;
     }
     if ( node->is_body ){
         push_to_children( node, *node, min, max );
@@ -66,6 +68,7 @@ void add_body(node_t *node, const body_t &body, const point_t min, const point_t
     node->x /= node->mass;
     node->y /= node->mass;
     push_to_children(node, body, min, max );
+    return true;
 }
 
 force_t calculate_force( const node_t node, const body_t &body, const coord_t &size ){
@@ -77,6 +80,9 @@ force_t calculate_force( const node_t node, const body_t &body, const coord_t &s
     }
     force_t result = {0.0, 0.0};
     for ( int i = 0; i < CHILDREN_NUMBER; ++i ){
+        if ( node.child[i] == NULL ){
+            continue;
+        }
         result += calculate_force( *node.child[i], body, size/2.0 );
     }
     return result;

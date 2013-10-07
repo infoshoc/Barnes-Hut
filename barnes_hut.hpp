@@ -31,14 +31,14 @@ void push_to_children(node_t *node, const body_t &body, const point_t &min, cons
             if ( add_body(
                      node->child[child_idx],
                      body,
-                     {
+                     make_point (
                          point[x_idx-1].x,
                          point[y_idx-1].y
-                     },
-                     {
+                     ),
+                     make_point (
                          point[x_idx].x,
                          point[y_idx].y
-                     }
+					)
             ) ) {
                 return;
             }
@@ -73,7 +73,7 @@ bool add_body(node_t *node, const body_t &body, const point_t min, const point_t
 
 force_t calculate_force( const node_t node, const body_t &body, const coord_t &size ){
     if ( node.mass < EPS || (body-node).length2() < EPS ){
-        return {0.0, 0.0};
+        return make_point ( 0.0, 0.0 );
     }
     if ( node.is_body || fabs(size / (node-body).length()) < THETA ){
         return get_force(body, node);

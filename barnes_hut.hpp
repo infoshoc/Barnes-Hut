@@ -12,7 +12,7 @@ void calculate(const body_t*, const unsigned int, force_t*, const point_t, const
 
 const int CHILDREN_NUMBER = 4;
 const int BORDERS_NUMBER = 3;
-const coord_t THETA = 0.1;
+const coord_t THETA = 0.05;
 const unsigned int MAX_BODIES_NUMBER = 30042;
 
 struct node_t : public body_t{
@@ -47,7 +47,7 @@ void push_to_children(node_t *node, const body_t &body, const point_t &min, cons
 }
 
 bool add_body(node_t *node, const body_t &body, const point_t min, const point_t max){
-    if ( body.x < min.x + EPS || body.x + EPS > max.x || body.y < min.y + EPS || body.y + EPS > max.y ){
+    if ( body.x < min.x || body.x > max.x || body.y < min.y || body.y > max.y ){
         return false;
     }
 

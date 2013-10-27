@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdio>
+#include <omp.h>
 #include <string>
 #include "body.hpp"
 using namespace std;
@@ -47,4 +48,21 @@ void write_forces( const int argc, char *argv[], const unsigned int bodies_numbe
         fprintf ( fh, "Body #%u: force: (%f; %f)\n", i+1, forces[i].x, forces[i].y );
     }
     fclose(fh);
+}
+
+
+
+static double start, finish;
+inline void timer_start(){
+#ifdef STUDIO 
+	start = omp_get_wtime();
+#endif
+}
+inline void timer_finish(){
+#ifdef STUDIO
+	finish = omp_get_wtime();
+#endif
+}
+inline double timer_duration(){
+	return finish-start;
 }

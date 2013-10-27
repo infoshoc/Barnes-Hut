@@ -12,31 +12,18 @@ int main( int argc, char **argv ){
 
     read_test(argc, argv, bodies_number, space_radius, bodies, speed);
 
+	timer_start();
+
     /*Tree building*/
     point_t min_point = { -space_radius, -space_radius }, max_point = { space_radius, space_radius };
     build(bodies, bodies_number, min_point, max_point );
 
-    /*Information*/
-    /*int max_i = 1;
-    for ( int i = 1; i <= max_i; ++i ){
-        printf ( "Node #%d", i );
-        if ( tree[i].mass < EPS ){
-            printf ( "is empty\n");
-            continue;
-        }
-        max_i = max ( max_i, (i<<2)+3 );
-        printf ( ":\n\tPosition: (%lf;%lf)\n\tMass: %lf\n\t", tree[i].x, tree[i].y, tree[i].mass );
-        if ( tree[i].is_body ){
-            printf ( "It's body\n" );
-        }
-    }*/
-
     /*Emulation*/
     calculate(bodies, bodies_number, forces, min_point, max_point);
 
-    for ( unsigned int i = 0; i < bodies_number; ++i ){
-        move_body(bodies[i], speed[i], forces[i], 0.42);
-    }
+	timer_finish();
+
+	printf ( "%f s\n", timer_duration() );
 
     write_forces ( argc, argv, bodies_number, forces );
 

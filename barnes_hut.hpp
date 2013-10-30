@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstring>
 #include "body.hpp"
+#include "theta.hpp"
 using namespace std;
 
 /*API*/
@@ -12,7 +13,6 @@ void calculate(const body_t*, const unsigned int, force_t*, const point_t, const
 
 const int CHILDREN_NUMBER = 4;
 const int BORDERS_NUMBER = 3;
-const coord_t THETA = 0.05;
 const unsigned int MAX_BODIES_NUMBER = 30042;
 
 struct node_t : public body_t{

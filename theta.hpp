@@ -1,1 +1,1 @@
-const coord_t THETA = 0.05;
+const coord_t THETA = 1.0 / 20; 

@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <omp.h>
+#include <ctime>
 #include <string>
 #include "body.hpp"
 using namespace std;
@@ -52,17 +53,34 @@ void write_forces( const int argc, char *argv[], const unsigned int bodies_numbe
 
 
 
-static double start, finish;
+static
+#ifdef STUDIO
+    double
+#else
+    time_t
+#endif
+    start, finish;
 inline void timer_start(){
-#ifdef STUDIO 
-	start = omp_get_wtime();
+	start =
+#ifdef STUDIO
+    omp_get_wtime();
+#else
+    time(NULL);
 #endif
 }
 inline void timer_finish(){
+    finish =
 #ifdef STUDIO
-	finish = omp_get_wtime();
+	omp_get_wtime();
+#else
+    time(NULL);
 #endif
 }
 inline double timer_duration(){
-	return finish-start;
+	return
+#ifdef STUDIO
+		finish-start;
+#else
+	difftime(finish, start);
+#endif
 }

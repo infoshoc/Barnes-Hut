@@ -28,7 +28,7 @@ int main( int argc, char **argv ){
 	
 	timer_finish();
 	
-	printf ( "%f s\n", timer_duration() );
+	printf ( "%f ", timer_duration() );
 
 	write_forces(argc, argv, bodies_number, force_x, force_y );
 

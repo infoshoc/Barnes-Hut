@@ -1,0 +1,2 @@
+STUDIO COMPILATION
+MSBuild Barnes-Hut.vcxproj /p:Configuration=Release

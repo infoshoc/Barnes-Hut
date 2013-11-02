@@ -11,6 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="galaxy30k.txt" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -20,6 +21,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="galaxy30k.txt" />
 				<Compiler>
 					<Add option="-O2" />
 				</Compiler>
@@ -32,7 +34,14 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="main.cpp" />
+		<Unit filename="Barnes_Hut.cpp" />
+		<Unit filename="barnes_hut.hpp" />
+		<Unit filename="body.hpp" />
+		<Unit filename="galaxy30k.txt" />
+		<Unit filename="output.txt" />
+		<Unit filename="point.hpp" />
+		<Unit filename="rw.hpp" />
+		<Unit filename="theta.hpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

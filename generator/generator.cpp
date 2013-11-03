@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
-
+#include <algorithm>
 using namespace std;
 
 const double EPS = 1e-2;
@@ -11,7 +11,6 @@ const double EPS = 1e-2;
 double random( double max ){
     return 2.0 * max * rand() / (double)RAND_MAX - max;
 }
-
 
 int main( int argc, char **argv ){
 
@@ -38,32 +37,25 @@ int main( int argc, char **argv ){
     srand ( seed );
 
     printf ( "%u\n%E\n", body_number, radius );
-    double *x = new double[body_number], *y = new double[body_number];
+    int **coord = new int*[4*body_number];
+    for ( unsigned int i = 0; i < 4*body_number; ++i ){
+        coord[i] = new int[2];
+        coord[i][0] = coord[i][1] = i - 2*body_number;
+    }
+    for ( unsigned int i = 0; i < 4*body_number; ++i ){
+        for ( short j = 0; j < 2; ++j ){
+            swap ( coord[i][j], coord[rand()%(4*body_number)][j] );
+        }
+    }
+
     for ( unsigned int i = 0; i < body_number; ++i ){
-        double mass = abs ( random( max_mass ) );
-        while ( mass < EPS ){
-            mass = abs ( random( max_mass ) );
-        }
-        double new_x = random( radius ), new_y = random( radius );
-        bool incorrect = true;
-        while ( incorrect ) {
-            incorrect = false;
-            for ( unsigned int j = 0; j < i; ++j ){
-                if ( abs ( new_x - x[j] ) < EPS && abs ( new_y - y[j] ) < EPS  ){
-                    new_x = random( radius );
-                    new_y = random( radius );
-                    incorrect = true;
-                    break;
-                }
-            }
-        }
-        x[i] = new_x;
-        y[i] = new_y;
+        double x = coord[i][0] * radius / 2 / body_number,
+               y = coord[i][1] * radius / 2 / body_number;
         printf (
             "%E %E %E %E %E %d %d %d\n",
-            new_x, new_y,
+            x, y,
             random( max_abs_speed ), random( max_abs_speed ),
-            mass,
+            random( max_mass - EPS )+EPS,
             255, 255, 0
         );
     }

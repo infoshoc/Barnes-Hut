@@ -55,7 +55,7 @@ int main( int argc, char **argv ){
             "%E %E %E %E %E %d %d %d\n",
             x, y,
             random( max_abs_speed ), random( max_abs_speed ),
-            random( max_mass - EPS )+EPS,
+            abs ( random( max_mass - EPS )+EPS ),
             255, 255, 0
         );
     }

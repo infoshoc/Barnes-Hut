@@ -13,7 +13,7 @@ int main( int argc, char **argv ){
 		printf ( "Arguments are:\n\t[1] - input\n\t[2] - output\n\t[3] - correct answer\n\t[4] - verdict file (optional)" );
 		return 1;
 	}
-	
+
 	FILE *inp = fopen ( argv[1], "r" );
 	if ( inp == NULL ) {
 		printf ( "Could not open \"%s\" for reading\n", argv[1] );
@@ -41,7 +41,7 @@ int main( int argc, char **argv ){
 	for ( unsigned int i = 0; i < body_number; ++i ) {
 		static unsigned int body_idx[2];
 		static long double force[2][2], absolute[2], relative[2];
-		
+
 		if ( fscanf ( ans, format, &body_idx[0], &force[0][0], &force[0][1] ) < 3 ) {
 			printf ( "Can not find all answer information about body #%u\n", i+1 );
 			return 5;
@@ -73,6 +73,8 @@ int main( int argc, char **argv ){
 	fprintf ( ver, "Maximal Relative Body #%u value = %Lf%%\n", max_relative_idx, max_relative_value );
 
 	fclose ( ver );
+
+	printf ( "%Lf ", max_relative_value );
 
 	return 0;
 }

@@ -36,7 +36,7 @@ int main( int argc, char **argv ){
     /*Emulation*/
     calculate(bodies, bodies_number, forces, min_point, max_point);
 
-	timer_finish();
+    timer_finish();
 
 	printf ( "%f ", timer_duration() );
 

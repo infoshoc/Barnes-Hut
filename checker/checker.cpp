@@ -40,34 +40,34 @@ int main( int argc, char **argv ){
 
 	for ( unsigned int i = 0; i < body_number; ++i ) {
 		static unsigned int body_idx[2];
-		static long double force[2][2], absolute[2], relative[2];
+		static long double x, y, absolute, relative, abs_force[2];
 
-		if ( fscanf ( ans, format, &body_idx[0], &force[0][0], &force[0][1] ) < 3 ) {
+		if ( fscanf ( ans, format, &body_idx[0], &x, &y ) < 3 ) {
 			printf ( "Can not find all answer information about body #%u\n", i+1 );
 			return 5;
 		}
+		abs_force[0] = sqrt ( x * x + y * y );
 
-		if ( fscanf ( out, format, &body_idx[1], &force[1][0], &force[1][1] ) < 3 ) {
+		if ( fscanf ( out, format, &body_idx[1], &x, &y ) < 3 ) {
 			printf ( "Can not find all answer information about body #%u\n", i+1 );
 			return 6;
 		}
+		abs_force[1] = sqrt ( x * x + y * y );
 
 		if ( body_idx[0] != body_idx[1] ){
 			fprintf ( ver, "Body #%u found. Expected #%u\n", body_idx[1], body_idx[0] );
 			break;
 		}
 
-		absolute[0] = abs ( force[1][0] - force[0][0] );
-		absolute[1] = abs ( force[1][1] - force[0][1] );
-		relative[0] = abs ( absolute[0]*100.0 / force[0][0] );
-		relative[1] = abs ( absolute[1]*100.0 / force[0][1] );
-
-		if ( max ( relative[0], relative[1] ) > max_relative_value ) {
-			max_relative_value = max ( relative[0], relative[1] );
+		absolute = abs ( abs_force[1] - abs_force[0] );
+		relative = abs ( absolute / abs_force[0] );
+		
+		if ( relative > max_relative_value ) {
+			max_relative_value = relative;
 			max_relative_idx = body_idx[0];
 		}
 
-		fprintf ( ver, "Body #%u:\n\tAbsolute:(%Lf; %Lf)\n\tRelative:(%Lf%%; %Lf%%)\n", body_idx[0], absolute[0], absolute[1], relative[0], relative[1] );
+		fprintf ( ver, "Body #%u:\n\tAbsolute:%Lf\n\tRelative:%Lf\n", body_idx[0], absolute, relative );
 	}
 
 	fprintf ( ver, "Maximal Relative Body #%u value = %Lf%%\n", max_relative_idx, max_relative_value );

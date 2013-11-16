@@ -51,6 +51,14 @@ void write_forces( const int argc, char *argv[], const unsigned int bodies_numbe
     fclose(fh);
 }
 
+void write_bodies ( const int argc, char *argv[], const unsigned int bodies_number, const point_t *position ){
+    string file_name = argc >= 4 ? argv[3] : "bodies.txt";
+    FILE *fh = fopen ( file_name.c_str(), "w" );
+    for ( unsigned int i = 0; i < bodies_number; ++i ){
+        fprintf ( fh, "Body #%u: (%f; %f)\n", i, position[i].x, position[i].y );
+    }
+    fclose ( fh );
+}
 
 
 static

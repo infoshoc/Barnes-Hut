@@ -27,14 +27,12 @@ void read_test(const int argc, char *argv[], unsigned int &bodies_number, coord_
     }
 
     for ( unsigned int i = 0; i < bodies_number; ++i ){
-        static int red, green, blue;
         if ( fscanf (
                 fh,
-                "%lf %lf %lf %lf %lf %d %d %d ",
+                "%lf %lf %lf %lf %lf %*d %*d %*d ",
                 &bodies[i].x, &bodies[i].y,
                 &speed[i].x, &speed[i].y,
-                &bodies[i].mass,
-                &red, &green, &blue
+                &bodies[i].mass
             ) != 8 ){
             printf ( "Full information about body #%d not found\n", i+1 );
             exit(4);
@@ -51,11 +49,19 @@ void write_forces( const int argc, char *argv[], const unsigned int bodies_numbe
     fclose(fh);
 }
 
-void write_bodies ( const int argc, char *argv[], const unsigned int bodies_number, const point_t *position ){
+void write_bodies ( const int argc, char *argv[], const unsigned int bodies_number, const body_t *bodies, const speed_t *speed, const coord_t space_radius ){
     string file_name = argc >= 4 ? argv[3] : "bodies.txt";
     FILE *fh = fopen ( file_name.c_str(), "w" );
+    fprintf ( fh, "%u\n%lf\n", bodies_number, space_radius );
     for ( unsigned int i = 0; i < bodies_number; ++i ){
-        fprintf ( fh, "Body #%u: (%f; %f)\n", i, position[i].x, position[i].y );
+        fprintf (
+            fh,
+            "%lf %lf %lf %lf %lf %d %d %d\n",
+            bodies[i].x, bodies[i].y,
+            speed[i].x, speed[i].y,
+            bodies[i].mass,
+            bodies[i].red, bodies[i].green, bodies[i].blue
+        );
     }
     fclose ( fh );
 }

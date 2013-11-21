@@ -17,6 +17,7 @@
 #include <cstdio>
 #include <cmath>
 #include <algorithm>
+#include "bmp.hpp"
 using namespace std;
 
 #ifdef __APPLE__
@@ -29,13 +30,21 @@ const int MAX_BODIES_NUMBER = 30042;
 const double PI = 3.1415926535897932384626433832795;
 
 unsigned int bodies_number;
-struct body_t{
+struct sphere{
     double x, y;
     GLubyte red, green, blue;
 } bodies[MAX_BODIES_NUMBER];
 double space_radius;
 
-int read_body( const char *file_name, unsigned int &bodies_number, double &space_radius, body_t *bodies ){
+int side, x_padding, y_padding;
+RGBTRIPLE *pixels;
+
+void save_bitmap( char *file_name ){
+	glReadPixels ( x_padding, y_padding, side, side, GL_RGB, GL_UNSIGNED_BYTE, pixels );
+	SaveBitmapToFileColor ( pixels, side, side, 24, L"test.bmp" );
+}
+
+int read_body( const char *file_name, unsigned int &bodies_number, double &space_radius, sphere *bodies ){
     FILE *fh = fopen ( file_name, "r" );
     if ( fh == NULL ){
         fprintf ( stderr, "Cannot open %s\n", file_name );
@@ -71,11 +80,13 @@ static int stacks = 16;
 
 static void resize(int width, int height)
 {
-	int side = min ( width, height );
+	side = min ( width, height );
     //const float ar = (float) width / (float) height;
-	int x_padding = ( width - side ) / 2;
-	int y_padding = ( height - side ) / 2;
-
+	x_padding = ( width - side ) / 2;
+	y_padding = ( height - side ) / 2;
+	delete [] pixels;
+	pixels = new RGBTRIPLE [ side * side ];
+	
 	glViewport(x_padding, y_padding, side, side);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -115,6 +126,7 @@ static void display(void)
 	}
 
     glutSwapBuffers();
+	save_bitmap("test.bmp");
 }
 
 
@@ -144,8 +156,10 @@ static void key(unsigned char key, int, int)
     glutPostRedisplay();
 }
 
-static void idle(void)
-{
+static void idle(void){
+
+
+
     glutPostRedisplay();
 }
 

@@ -74,6 +74,9 @@
   <ItemGroup>
     <Text Include="one.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="bmp.hpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

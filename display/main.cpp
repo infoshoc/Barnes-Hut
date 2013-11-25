@@ -39,9 +39,9 @@ double space_radius;
 int side, x_padding, y_padding;
 RGBTRIPLE *pixels;
 
-void save_bitmap( char *file_name ){
+void save_bitmap( const char *file_name ){
 	glReadPixels ( x_padding, y_padding, side, side, GL_RGB, GL_UNSIGNED_BYTE, pixels );
-	SaveBitmapToFileColor ( pixels, side, side, 24, L"test.bmp" );
+	SaveBitmapToFileColor ( pixels, side, side, 24, file_name );
 }
 
 int read_body( const char *file_name, unsigned int &bodies_number, double &space_radius, sphere *bodies ){
@@ -86,7 +86,7 @@ static void resize(int width, int height)
 	y_padding = ( height - side ) / 2;
 	delete [] pixels;
 	pixels = new RGBTRIPLE [ side * side ];
-	
+
 	glViewport(x_padding, y_padding, side, side);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();

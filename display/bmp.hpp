@@ -1,6 +1,8 @@
 #include <Windows.h>
+#include <string>
+using namespace std;
 
-void SaveBitmapToFileColor( RGBTRIPLE* pBitmapBits, LONG lWidth, LONG lHeight, WORD wBitsPerPixel, LPCTSTR lpszFileName )
+void SaveBitmapToFileColor( PRGBTRIPLE pBitmapBits, LONG lWidth, LONG lHeight, WORD wBitsPerPixel, char *lpszFileName )
 {
 
     BITMAPINFOHEADER bmpInfoHeader;
@@ -23,7 +25,7 @@ void SaveBitmapToFileColor( RGBTRIPLE* pBitmapBits, LONG lWidth, LONG lHeight, W
     // Calculate the image size in bytes
     bmpInfoHeader.biSizeImage = lWidth* lHeight * (wBitsPerPixel/8);
 
-    BITMAPFILEHEADER bfh = {0};
+    BITMAPFILEHEADER bfh;
     // This value should be values of BM letters i.e 0x4D42
     // 0x4D = M 0?42 = B storing in reverse order to match with endian
 
@@ -35,35 +37,34 @@ void SaveBitmapToFileColor( RGBTRIPLE* pBitmapBits, LONG lWidth, LONG lHeight, W
     // Total size of image including size of headers
     bfh.bfSize = bfh.bfOffBits + bmpInfoHeader.biSizeImage;
     // Create the file in disk to write
-    HANDLE hFile = CreateFile( lpszFileName,GENERIC_WRITE, 0,NULL,
-        CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL,NULL);
+	FILE *fh = fopen ( lpszFileName, "wb" );
 
-    if( !hFile ) // return if error opening file
+    if( fh == NULL ) // return if error opening file
     {
         return;
     }
 
     DWORD dwWritten = 0;
     // Write the File header
-    WriteFile( hFile, &bfh, sizeof(bfh), &dwWritten , NULL );
+	fwrite ( &bfh, sizeof ( bfh ), 1, fh );
     // Write the bitmap info header
-    WriteFile( hFile, &bmpInfoHeader, sizeof(bmpInfoHeader), &dwWritten, NULL );
+	fwrite ( &bmpInfoHeader, sizeof(bmpInfoHeader), 1, fh );
     // Write the palette
     //WriteFile( hFile, &palette[0], sizeof(RGBQUAD) * 256, &dwWritten, NULL );
     // Write the RGB Data
     if(lWidth%4 == 0)
     {
-        WriteFile( hFile, pBitmapBits, bmpInfoHeader.biSizeImage, &dwWritten, NULL );
+		fwrite ( pBitmapBits, bmpInfoHeader.biSizeImage, 1, fh );
     }
     else
     {
         char* empty = new char[ 4 - lWidth % 4];
         for(int i = 0; i < lHeight; ++i)
         {
-            WriteFile( hFile, &pBitmapBits[i * lWidth], lWidth, &dwWritten, NULL );
-            WriteFile( hFile, empty,  4 - lWidth % 4, &dwWritten, NULL );
+			fwrite ( &pBitmapBits[i * lWidth], lWidth, 1, fh );
+			fwrite ( empty, 4 - lWidth % 4, 1, fh );
         }
     }
     // Close the file handle
-    CloseHandle( hFile );
+	fclose ( fh );
 }

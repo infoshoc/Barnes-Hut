@@ -77,6 +77,10 @@
   <ItemGroup>
     <None Include="bmp.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\barnes_hut.hpp" />
+    <ClInclude Include="..\rw.hpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

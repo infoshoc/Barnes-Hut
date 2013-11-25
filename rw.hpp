@@ -29,10 +29,11 @@ void read_test(const int argc, char *argv[], unsigned int &bodies_number, coord_
     for ( unsigned int i = 0; i < bodies_number; ++i ){
         if ( fscanf (
                 fh,
-                "%lf %lf %lf %lf %lf %*d %*d %*d ",
+                "%lf %lf %lf %lf %lf %hd %hd %hd ",
                 &bodies[i].x, &bodies[i].y,
                 &speed[i].x, &speed[i].y,
-                &bodies[i].mass
+                &bodies[i].mass,
+				&bodies[i].red, &bodies[i].green, &bodies[i].blue
             ) != 8 ){
             printf ( "Full information about body #%d not found\n", i+1 );
             exit(4);

@@ -19,6 +19,7 @@
 #include <algorithm>
 #include "bmp.hpp"
 #include "../barnes_hut.hpp"
+#include "../rw.hpp"
 using namespace std;
 
 #ifdef __APPLE__
@@ -27,62 +28,31 @@ using namespace std;
 #include <GL/glut.h>
 #endif
 
-const int MAX_BODIES_NUMBER = 30042;
-const double PI = 3.1415926535897932384626433832795;
-
+/*FOR CALCULATIONS*/
+body_t bodies[MAX_BODIES_NUMBER];
+speed_t speed[MAX_BODIES_NUMBER];
+force_t forces[MAX_BODIES_NUMBER];
 unsigned int bodies_number;
-struct sphere{
-    double x, y;
-    GLubyte red, green, blue;
-} bodies[MAX_BODIES_NUMBER];
-double space_radius;
+coord_t space_radius;
 
+/*FOR DISPLAYING*/
+const double PI = 3.1415926535897932384626433832795;
 int side, x_padding, y_padding;
 RGBTRIPLE *pixels;
+static int slices = 16;
+static int stacks = 16;
 
+/*Saving current picture to bmp file*/
 void save_bitmap( const char *file_name ){
 	glReadPixels ( x_padding, y_padding, side, side, GL_RGB, GL_UNSIGNED_BYTE, pixels );
 	SaveBitmapToFileColor ( pixels, side, side, 24, file_name );
 }
-
-int read_body( const char *file_name, unsigned int &bodies_number, double &space_radius, sphere *bodies ){
-    FILE *fh = fopen ( file_name, "r" );
-    if ( fh == NULL ){
-        fprintf ( stderr, "Cannot open %s\n", file_name );
-        return 1;
-    }
-    if ( fscanf ( fh, "%u ", &bodies_number ) != 1 ) {
-        fprintf ( stderr, "Cannot read bodies' number\n" );
-        return 2;
-    }
-    if ( fscanf ( fh, "%lf ", &space_radius ) != 1 ) {
-        fprintf ( stderr, "Cannot read space's radius\n" );
-        return 3;
-    }
-    for ( unsigned int i = 0; i < bodies_number; ++i ){
-        if ( fscanf (
-                fh,
-                "%lf %lf %*lf %*lf %*lf %d %d %d ",
-                &bodies[i].x, &bodies[i].y,
-                &bodies[i].red, &bodies[i].green, &bodies[i].blue
-            ) != 5 ){
-            fprintf ( stderr, "Full information about body #%d not found\n", i+1 );
-            return 4;
-        }
-    }
-    fclose ( fh );
-    return 0;
-}
-
-static int slices = 16;
-static int stacks = 16;
 
 /* GLUT callback Handlers */
 
 static void resize(int width, int height)
 {
 	side = min ( width, height );
-    //const float ar = (float) width / (float) height;
 	x_padding = ( width - side ) / 2;
 	y_padding = ( height - side ) / 2;
 	delete [] pixels;
@@ -100,14 +70,6 @@ static void resize(int width, int height)
     glLoadIdentity();
 
 	glTranslated(0.0, 0.0, -z_far+0.1);
-}
-
-void disk( const double radius, const int slices ){
-	glBegin ( GL_POLYGON );
-	for ( int i = 0; i < slices; ++i ) {
-		glVertex2d ( cos ( 2 * PI * i / slices ) * radius, sin ( 2 * PI * i / slices ) * radius );
-	}
-	glEnd();
 }
 
 static void display(void)
@@ -159,7 +121,10 @@ static void key(unsigned char key, int, int)
 
 static void idle(void){
 
-
+	static point_t min_point = { -space_radius, -space_radius }, max_point = { space_radius, space_radius };
+    build(bodies, bodies_number, min_point, max_point );
+    calculate(bodies, bodies_number, forces, min_point, max_point);
+	movement(bodies, bodies_number, forces, speed, 0.01 );
 
     glutPostRedisplay();
 }
@@ -178,7 +143,7 @@ const GLfloat high_shininess[] = { 100.0f };
 
 int main(int argc, char *argv[])
 {
-    read_body( argc < 2 ? "input.txt" : argv[1], bodies_number, space_radius, bodies );
+	read_test( argc, argv, bodies_number, space_radius, bodies, speed );
 
     glutInit(&argc, argv);
     glutInitWindowSize(640,480);

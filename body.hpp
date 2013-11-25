@@ -13,6 +13,7 @@ const double GRAVITATIONAL_CONSTANT = 1;//6.67384e-11;
 
 struct body_t : public point_t{
     mass_t mass;
+	short red, green, blue;
 };
 inline bool operator != (const body_t &a, const body_t &b ){
     return fabs(a.x-b.x) > EPS || fabs(a.y-b.y) > EPS  || fabs(a.mass-b.mass) > EPS;

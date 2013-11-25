@@ -34,6 +34,7 @@ speed_t speed[MAX_BODIES_NUMBER];
 force_t forces[MAX_BODIES_NUMBER];
 unsigned int bodies_number;
 coord_t space_radius;
+duration_t interval = 1;
 
 /*FOR DISPLAYING*/
 const double PI = 3.1415926535897932384626433832795;
@@ -103,16 +104,11 @@ static void key(unsigned char key, int, int)
             break;
 
         case '+':
-            slices++;
-            stacks++;
+			interval += 0.001;
             break;
 
         case '-':
-            if (slices>3 && stacks>3)
-            {
-                slices--;
-                stacks--;
-            }
+			interval = max ( interval-0.001, 0.0 );
             break;
     }
 
@@ -124,7 +120,7 @@ static void idle(void){
 	static point_t min_point = { -space_radius, -space_radius }, max_point = { space_radius, space_radius };
     build(bodies, bodies_number, min_point, max_point );
     calculate(bodies, bodies_number, forces, min_point, max_point);
-	movement(bodies, bodies_number, forces, speed, 0.01 );
+	movement(bodies, bodies_number, forces, speed, interval );
 
     glutPostRedisplay();
 }

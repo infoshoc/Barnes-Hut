@@ -2,7 +2,7 @@
 #include <string>
 using namespace std;
 
-void SaveBitmapToFileColor( PRGBTRIPLE pBitmapBits, LONG lWidth, LONG lHeight, WORD wBitsPerPixel, char *lpszFileName )
+void SaveBitmapToFileColor( PRGBTRIPLE pBitmapBits, LONG lWidth, LONG lHeight, WORD wBitsPerPixel, const char *file_name )
 {
 
     BITMAPINFOHEADER bmpInfoHeader;
@@ -37,7 +37,7 @@ void SaveBitmapToFileColor( PRGBTRIPLE pBitmapBits, LONG lWidth, LONG lHeight, W
     // Total size of image including size of headers
     bfh.bfSize = bfh.bfOffBits + bmpInfoHeader.biSizeImage;
     // Create the file in disk to write
-	FILE *fh = fopen ( lpszFileName, "wb" );
+	FILE *fh = fopen ( file_name, "wb" );
 
     if( fh == NULL ) // return if error opening file
     {

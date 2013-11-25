@@ -18,6 +18,7 @@
 #include <cmath>
 #include <algorithm>
 #include "bmp.hpp"
+#include "../barnes_hut.hpp"
 using namespace std;
 
 #ifdef __APPLE__

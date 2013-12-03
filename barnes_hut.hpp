@@ -52,7 +52,10 @@ bool add_body(node_t *node, const body_t &body, const point_t min, const point_t
     }
 
     if ( node->mass < EPS ){
-        memcpy ( node, &body, sizeof(body_t) );
+        //memcpy ( node, &body, sizeof(body_t) );
+		node->mass = body.mass;
+		node->x = body.x;
+		node->y = body.y;
         node->is_body = true;
         return true;
     }
@@ -90,19 +93,22 @@ force_t calculate_force( const node_t node, const body_t &body, const coord_t &s
 
 void build ( body_t *bodies, const unsigned int bodies_number, const point_t min_point, const point_t max_point ){
     memset(root, 0, sizeof(node_t));
-    for ( unsigned int i = 0; i < bodies_number; ++i ){
+	//#pragma omp parallel for
+    for ( int i = 0; i < bodies_number; ++i ){
         add_body(root, bodies[i], min_point, max_point );
     }
 }
 void calculate( const body_t *bodies, const unsigned int bodies_number, force_t *forces, const point_t min_point, const point_t max_point ){
     static coord_t size = min_point.x - max_point.x;
-    for ( unsigned int i = 0; i < bodies_number; ++i ){
+	#pragma omp parallel for
+    for ( int i = 0; i < bodies_number; ++i ){
         forces[i] = calculate_force(*root, bodies[i], size );
     }
 }
 
 void movement ( body_t *bodies, const unsigned int bodies_number, const force_t *forces, speed_t *speeds, const duration_t time ){
-    for ( unsigned int i = 0; i < bodies_number; ++i ){
+	#pragma omp parallel for
+    for ( int i = 0; i < bodies_number; ++i ){
         move_body(bodies[i], speeds[i], forces[i], time );
     }
 }

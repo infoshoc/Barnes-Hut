@@ -2,8 +2,7 @@
 #include <string>
 using namespace std;
 
-void SaveBitmapToFileColor( PRGBTRIPLE pBitmapBits, LONG lWidth, LONG lHeight, WORD wBitsPerPixel, const char *file_name )
-{
+void SaveBitmapToFileColor( RGBTRIPLE *pBitmapBits, LONG lWidth, LONG lHeight, WORD wBitsPerPixel, const char *file_name ){
 
     BITMAPINFOHEADER bmpInfoHeader;
     // Set the size
@@ -44,7 +43,7 @@ void SaveBitmapToFileColor( PRGBTRIPLE pBitmapBits, LONG lWidth, LONG lHeight, W
         return;
     }
 
-    DWORD dwWritten = 0;
+    //DWORD dwWritten = 0;
     // Write the File header
 	fwrite ( &bfh, sizeof ( bfh ), 1, fh );
     // Write the bitmap info header

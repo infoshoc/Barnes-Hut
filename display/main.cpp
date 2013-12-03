@@ -40,8 +40,7 @@ duration_t interval = 1;
 const double PI = 3.1415926535897932384626433832795;
 int side, x_padding, y_padding;
 RGBTRIPLE *pixels;
-static int slices = 16;
-static int stacks = 16;
+double coord_multyply;
 
 /*Saving current picture to bmp file*/
 void save_bitmap( const char *file_name ){
@@ -64,28 +63,29 @@ static void resize(int width, int height)
     glLoadIdentity();
 
 	double z_near = 2.0;
-	double z_far = space_radius * z_near;
-    glFrustum(-1.0, 1.0, -1.0, 1.0, z_near, z_far);
+	double z_far = 200.0;
+	coord_multyply = z_far / 2.0 / z_near / space_radius;
+    glFrustum(-1.1, 1.1, -1.1, 1.1, z_near, z_far);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-	glTranslated(0.0, 0.0, -z_far+0.1);
+	glTranslated(0.0, 0.0, -z_far/2.0);
 }
 
 static void display(void)
 {
-    const double t = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
-    const double a = t*90.0;
+    //const double t = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
+    //const double a = t*90.0;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glColor3d(1,0,0);
 
 	for ( unsigned int i = 0; i < bodies_number; ++i ) {
 		glPushMatrix();
-			glTranslated ( bodies[i].x, bodies[i].y, 0.0 );
+			glTranslated ( bodies[i].x * coord_multyply, bodies[i].y * coord_multyply, 0.0 );
 			glColor3ub ( bodies[i].red, bodies[i].green, bodies[i].blue );
-			glutSolidSphere( 1.0, slices, stacks );
+			glutSolidSphere( 1, 32, 32 );
 		glPopMatrix();
 	}
 
@@ -104,12 +104,14 @@ static void key(unsigned char key, int, int)
             break;
 
         case '+':
-			interval += 0.001;
+			glScaled ( 2, 2, 2 );
             break;
 
         case '-':
-			interval = max ( interval-0.001, 0.0 );
+			glScaled ( 0.5, 0.5, 0.5 );
             break;
+
+
     }
 
     glutPostRedisplay();

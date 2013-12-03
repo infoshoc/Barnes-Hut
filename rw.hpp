@@ -7,7 +7,7 @@
 #include "body.hpp"
 using namespace std;
 
-void read_test(const int argc, char *argv[], unsigned int &bodies_number, coord_t &space_radius, body_t *bodies, speed_t *speed ){
+void read_test(const int argc, char *argv[], unsigned int &bodies_number, coord_t &space_radius, body_t *bodies, speed_t *speed, duration_t &interval ){
     string file_name = argc >= 2 ? string( argv[1] ) : "input.dat";
 
     FILE *fh = fopen ( file_name.c_str(), "r" );
@@ -39,6 +39,8 @@ void read_test(const int argc, char *argv[], unsigned int &bodies_number, coord_
             exit(4);
         }
     }
+
+	interval = argc >= 3 ? atoi ( argv[2] ) : 1;
 }
 
 void write_forces( const int argc, char *argv[], const unsigned int bodies_number, const force_t *forces ){

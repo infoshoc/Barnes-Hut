@@ -9,7 +9,7 @@ typedef point_t acceleration_t;
 typedef double duration_t;
 
 const coord_t EPS = 1e-9;
-const double GRAVITATIONAL_CONSTANT = 1;//6.67384e-11;
+const double GRAVITATIONAL_CONSTANT = 6.6738467e-11;
 
 struct body_t : public point_t{
     mass_t mass;
@@ -26,6 +26,6 @@ inline force_t get_force ( const body_t &a, const body_t &b ){
 
 void move_body( body_t &body, speed_t &speed, const point_t &force, duration_t time ){
     acceleration_t acceleration = force / body.mass;
-    body += time * ( speed + 0.5 * time * acceleration );
-    speed += time * acceleration;
+	speed += time * acceleration;
+	body += time * speed;
 }

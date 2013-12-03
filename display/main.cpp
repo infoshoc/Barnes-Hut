@@ -1,18 +1,3 @@
-/*
- * GLUT Shapes Demo
- *
- * Written by Nigel Stewart November 2003
- *
- * This program is test harness for the sphere, cone
- * and torus shapes in GLUT.
- *
- * Spinning wireframe and smooth shaded shapes are
- * displayed until the ESC or q key is pressed.  The
- * number of geometry stacks and slices can be adjusted
- * using the + and - keys.
- */
-
-
 #include <cstdlib>
 #include <cstdio>
 #include <cmath>
@@ -34,7 +19,7 @@ speed_t speed[MAX_BODIES_NUMBER];
 force_t forces[MAX_BODIES_NUMBER];
 unsigned int bodies_number;
 coord_t space_radius;
-duration_t interval = 1;
+duration_t interval;
 
 /*FOR DISPLAYING*/
 const double PI = 3.1415926535897932384626433832795;
@@ -141,14 +126,14 @@ const GLfloat high_shininess[] = { 100.0f };
 
 int main(int argc, char *argv[])
 {
-	read_test( argc, argv, bodies_number, space_radius, bodies, speed );
+	read_test( argc, argv, bodies_number, space_radius, bodies, speed, interval );
 
     glutInit(&argc, argv);
     glutInitWindowSize(640,480);
     glutInitWindowPosition(10,10);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 
-    glutCreateWindow("GLUT Shapes");
+    glutCreateWindow("Universe");
 
     glutReshapeFunc(resize);
     glutDisplayFunc(display);

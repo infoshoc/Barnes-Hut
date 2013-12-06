@@ -1,5 +1,6 @@
 #pragma once
 
+#include <omp.h>
 #include <cmath>
 #include <algorithm>
 #include <cstring>
@@ -18,6 +19,7 @@ const unsigned int MAX_BODIES_NUMBER = 30042;
 struct node_t : public body_t{
     bool is_body;
     node_t* child[CHILDREN_NUMBER];
+	omp_lock_t lock;
 } *root = new node_t(); //possibly (16*MAX_BODIES_NUMBER-1)/3
 
 void add_body ( node_t *, const body_t&, const point_t, const point_t ) ;
@@ -38,6 +40,7 @@ void push_to_children(node_t *node, const body_t &body, const point_t &min, cons
 			}
             if ( node->child[child_idx] == NULL ){
                 node->child[child_idx] = new node_t();
+				omp_init_lock(&node->child[child_idx]->lock);
             }
             add_body(
                 node->child[child_idx],
@@ -51,9 +54,14 @@ void push_to_children(node_t *node, const body_t &body, const point_t &min, cons
 }
 
 void add_body(node_t *node, const body_t &body, const point_t min, const point_t max){
+#ifdef _DEBUG
+	printf ( "Thread: %d\n", omp_get_thread_num() );
+#endif
+	omp_set_lock(&node->lock);
     if ( node->mass < EPS ){
         memcpy ( node, &body, sizeof(body_t) );
         node->is_body = true;
+		omp_unset_lock(&node->lock);	
         return;
     }
     if ( node->is_body ){
@@ -68,6 +76,7 @@ void add_body(node_t *node, const body_t &body, const point_t min, const point_t
     node->x /= node->mass;
     node->y /= node->mass;
     push_to_children(node, body, min, max );
+	omp_unset_lock(&node->lock);
 }
 
 force_t calculate_force( const node_t node, const body_t &body, const coord_t &size ){
@@ -89,6 +98,8 @@ force_t calculate_force( const node_t node, const body_t &body, const coord_t &s
 
 void build ( body_t *bodies, const int bodies_number, const point_t min_point, const point_t max_point ){
     memset(root, 0, sizeof(node_t));
+	omp_init_lock(&root->lock);
+#pragma omp parallel for
     for ( int i = 0; i < bodies_number; ++i ){
         add_body(root, bodies[i], min_point, max_point );
     }

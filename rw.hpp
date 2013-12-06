@@ -30,17 +30,21 @@ void read_test(const int argc, char *argv[], int &bodies_number, coord_t &space_
     }
 
     for ( int i = 0; i < bodies_number; ++i ){
+		static int red, green, blue;
         if ( fscanf (
                 fh,
-                "%lf %lf %lf %lf %lf %hd %hd %hd ",
+                "%lf %lf %lf %lf %lf %d %d %d ",
                 &bodies[i].x, &bodies[i].y,
                 &speed[i].x, &speed[i].y,
                 &bodies[i].mass,
-				&spheres[i].rgbtRed, &spheres[i].rgbtGreen, &spheres[i].rgbtBlue
+				&red, &green, &blue
             ) != 8 ){
             printf ( "Full information about body #%d not found\n", i+1 );
             exit(4);
         }
+		spheres[i].rgbtBlue = (BYTE)blue;
+		spheres[i].rgbtGreen = (BYTE)green;
+		spheres[i].rgbtRed = (BYTE)red;
     }
 
 	interval = argc >= 3 ? atoi ( argv[2] ) : 1;

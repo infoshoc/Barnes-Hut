@@ -17,6 +17,7 @@ using namespace std;
 body_t bodies[MAX_BODIES_NUMBER];
 speed_t speed[MAX_BODIES_NUMBER];
 force_t forces[MAX_BODIES_NUMBER];
+RGBTRIPLE spheres[MAX_BODIES_NUMBER];
 int bodies_number;
 coord_t space_radius;
 duration_t interval;
@@ -69,7 +70,7 @@ static void display(void)
 	for ( int i = 0; i < bodies_number; ++i ) {
 		glPushMatrix();
 			glTranslated ( bodies[i].x * coord_multyply, bodies[i].y * coord_multyply, 0.0 );
-			glColor3ub ( bodies[i].red, bodies[i].green, bodies[i].blue );
+			glColor3ubv((GLubyte*)&spheres[i]);
 			glutSolidSphere( 1, 32, 32 );
 		glPopMatrix();
 	}
@@ -126,7 +127,7 @@ const GLfloat high_shininess[] = { 100.0f };
 
 int main(int argc, char *argv[])
 {
-	read_test( argc, argv, bodies_number, space_radius, bodies, speed, interval );
+	read_test( argc, argv, bodies_number, space_radius, bodies, spheres, speed, interval );
 	omp_init_lock(&root->lock);
 
     glutInit(&argc, argv);

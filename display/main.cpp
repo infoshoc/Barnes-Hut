@@ -17,7 +17,7 @@ using namespace std;
 body_t bodies[MAX_BODIES_NUMBER];
 speed_t speed[MAX_BODIES_NUMBER];
 force_t forces[MAX_BODIES_NUMBER];
-unsigned int bodies_number;
+int bodies_number;
 coord_t space_radius;
 duration_t interval;
 

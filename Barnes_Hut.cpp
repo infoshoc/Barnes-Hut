@@ -5,12 +5,13 @@
 body_t bodies[MAX_BODIES_NUMBER];
 speed_t speed[MAX_BODIES_NUMBER];
 force_t forces[MAX_BODIES_NUMBER];
-unsigned int bodies_number;
+int bodies_number;
+double interval;
 coord_t space_radius;
 
 int main( int argc, char **argv ){
 
-    read_test(argc, argv, bodies_number, space_radius, bodies, speed);
+    read_test(argc, argv, bodies_number, space_radius, bodies, speed, interval );
 
 	timer_start();
 

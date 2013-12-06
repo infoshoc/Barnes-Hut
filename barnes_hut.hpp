@@ -103,7 +103,8 @@ void calculate( const body_t *bodies, const unsigned int bodies_number, force_t 
 }
 
 void movement ( body_t *bodies, const unsigned int bodies_number, const force_t *forces, speed_t *speeds, const duration_t time ){
-    for ( unsigned int i = 0; i < bodies_number; ++i ){
+#pragma omp parallel for
+    for ( int i = 0; i < bodies_number; ++i ){
         move_body(bodies[i], speeds[i], forces[i], time );
     }
 }

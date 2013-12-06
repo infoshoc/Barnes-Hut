@@ -96,7 +96,8 @@ void build ( body_t *bodies, const unsigned int bodies_number, const point_t min
 }
 void calculate( const body_t *bodies, const unsigned int bodies_number, force_t *forces, const point_t min_point, const point_t max_point ){
     static coord_t size = min_point.x - max_point.x;
-    for ( unsigned int i = 0; i < bodies_number; ++i ){
+#pragma omp parallel for
+    for ( int i = 0; i < bodies_number; ++i ){
         forces[i] = calculate_force(*root, bodies[i], size );
     }
 }

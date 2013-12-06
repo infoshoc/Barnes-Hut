@@ -63,6 +63,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -73,14 +74,14 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="one.txt" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="bmp.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\barnes_hut.hpp" />
-    <ClInclude Include="..\body.hpp" />
-    <ClInclude Include="..\point.hpp" />
     <ClInclude Include="..\rw.hpp" />
-    <ClInclude Include="..\theta.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

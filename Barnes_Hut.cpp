@@ -1,39 +1,28 @@
 #include <cstdio>
+#include <omp.h>
 #include "barnes_hut.hpp"
 #include "rw.hpp"
 
 body_t bodies[MAX_BODIES_NUMBER];
 speed_t speed[MAX_BODIES_NUMBER];
 force_t forces[MAX_BODIES_NUMBER];
+RGBTRIPLE spheres[MAX_BODIES_NUMBER];
 int bodies_number;
-double interval;
+duration_t interval;
 coord_t space_radius;
 
 int main( int argc, char **argv ){
 
-    read_test(argc, argv, bodies_number, space_radius, bodies, speed, interval );
+    read_test(argc, argv, bodies_number, space_radius, bodies, spheres, speed, interval);
 
 	timer_start();
+
+	/*Paralell preparation*/
 
     /*Tree building*/
     point_t min_point = { -space_radius, -space_radius }, max_point = { space_radius, space_radius };
     build(bodies, bodies_number, min_point, max_point );
-
-    /*Information*/
-    /*int max_i = 1;
-    for ( int i = 1; i <= max_i; ++i ){
-        printf ( "Node #%d", i );
-        if ( tree[i].mass < EPS ){
-            printf ( "is empty\n");
-            continue;
-        }
-        max_i = max ( max_i, (i<<2)+3 );
-        printf ( ":\n\tPosition: (%lf;%lf)\n\tMass: %lf\n\t", tree[i].x, tree[i].y, tree[i].mass );
-        if ( tree[i].is_body ){
-            printf ( "It's body\n" );
-        }
-    }*/
-
+	
     /*Emulation*/
     calculate(bodies, bodies_number, forces, min_point, max_point);
 

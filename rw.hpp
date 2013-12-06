@@ -1,15 +1,14 @@
 #pragma once
 
-#pragma warning ( disable : 4996 )
-
 #include <cstdio>
 #include <omp.h>
 #include <ctime>
 #include <string>
 #include "body.hpp"
+#include <Windows.h>
 using namespace std;
 
-void read_test(const int argc, char *argv[], int &bodies_number, coord_t &space_radius, body_t *bodies, speed_t *speed, duration_t &interval ){
+void read_test(const int argc, char *argv[], int &bodies_number, coord_t &space_radius, body_t *bodies, PRGBTRIPLE spheres, speed_t *speed, duration_t &interval ){
     string file_name = argc >= 2 ? string( argv[1] ) : "input.dat";
 
     FILE *fh = fopen ( file_name.c_str(), "r" );
@@ -18,7 +17,7 @@ void read_test(const int argc, char *argv[], int &bodies_number, coord_t &space_
         exit(1);
     }
 
-    if ( fscanf( fh, "%u ", &bodies_number ) != 1 ){
+    if ( fscanf( fh, "%d ", &bodies_number ) != 1 ){
         printf ( "Bodies number not found\n" );
         exit(2);
     }
@@ -35,7 +34,7 @@ void read_test(const int argc, char *argv[], int &bodies_number, coord_t &space_
                 &bodies[i].x, &bodies[i].y,
                 &speed[i].x, &speed[i].y,
                 &bodies[i].mass,
-				&bodies[i].red, &bodies[i].green, &bodies[i].blue
+				&spheres[i].rgbtRed, &spheres[i].rgbtGreen, &spheres[i].rgbtBlue
             ) != 8 ){
             printf ( "Full information about body #%d not found\n", i+1 );
             exit(4);
@@ -45,27 +44,27 @@ void read_test(const int argc, char *argv[], int &bodies_number, coord_t &space_
 	interval = argc >= 3 ? atoi ( argv[2] ) : 1;
 }
 
-void write_forces( const int argc, char *argv[], const unsigned int bodies_number, const force_t *forces ){
+void write_forces( const int argc, char *argv[], const int bodies_number, const force_t *forces ){
     string file_name = argc >= 3 ? argv[2] : "output.txt";
     FILE *fh = fopen(file_name.c_str(), "w");
-    for ( unsigned int i = 0; i < bodies_number; ++i ){
-        fprintf ( fh, "Body #%u: force: (%f; %f)\n", i+1, forces[i].x, forces[i].y );
+    for ( int i = 0; i < bodies_number; ++i ){
+        fprintf ( fh, "Body #%d: force: (%f; %f)\n", i+1, forces[i].x, forces[i].y );
     }
     fclose(fh);
 }
 
-void write_bodies ( const int argc, char *argv[], const unsigned int bodies_number, const body_t *bodies, const speed_t *speed, const coord_t space_radius ){
+void write_bodies ( const int argc, char *argv[], const int bodies_number, const body_t *bodies, const PRGBTRIPLE spheres, const speed_t *speed, const coord_t space_radius ){
     string file_name = argc >= 4 ? argv[3] : "bodies.txt";
     FILE *fh = fopen ( file_name.c_str(), "w" );
-    fprintf ( fh, "%u\n%lf\n", bodies_number, space_radius );
-    for ( unsigned int i = 0; i < bodies_number; ++i ){
+    fprintf ( fh, "%d\n%lf\n", bodies_number, space_radius );
+    for ( int i = 0; i < bodies_number; ++i ){
         fprintf (
             fh,
             "%lf %lf %lf %lf %lf %d %d %d\n",
             bodies[i].x, bodies[i].y,
             speed[i].x, speed[i].y,
             bodies[i].mass,
-            bodies[i].red, bodies[i].green, bodies[i].blue
+            spheres[i].rgbtRed, spheres[i].rgbtGreen, spheres[i].rgbtBlue
         );
     }
     fclose ( fh );

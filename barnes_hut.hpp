@@ -9,7 +9,7 @@ using namespace std;
 
 /*API*/
 void build(body_t*, const unsigned int, const point_t, const point_t);
-void calculate(const body_t*, const unsigned int, force_t*, const point_t, const point_t);
+void calculate(const body_t*, unsigned int, force_t*, const point_t, const point_t);
 
 const int CHILDREN_NUMBER = 4;
 const int BORDERS_NUMBER = 3;
@@ -18,7 +18,7 @@ const unsigned int MAX_BODIES_NUMBER = 30042;
 struct node_t : public body_t{
     bool is_body;
     node_t* child[CHILDREN_NUMBER];
-} *root = new node_t; //possibly (16*MAX_BODIES_NUMBER-1)/3
+} *root = new node_t(); //possibly (16*MAX_BODIES_NUMBER-1)/3
 
 bool add_body ( node_t *, const body_t&, const point_t, const point_t ) ;
 void push_to_children(node_t *node, const body_t &body, const point_t &min, const point_t &max){
@@ -88,13 +88,13 @@ force_t calculate_force( const node_t node, const body_t &body, const coord_t &s
     return result;
 }
 
-void build ( body_t *bodies, const unsigned int bodies_number, const point_t min_point, const point_t max_point ){
+void build ( body_t *bodies, const int bodies_number, const point_t min_point, const point_t max_point ){
     memset(root, 0, sizeof(node_t));
-    for ( unsigned int i = 0; i < bodies_number; ++i ){
+    for ( int i = 0; i < bodies_number; ++i ){
         add_body(root, bodies[i], min_point, max_point );
     }
 }
-void calculate( const body_t *bodies, const unsigned int bodies_number, force_t *forces, const point_t min_point, const point_t max_point ){
+void calculate( const body_t *bodies, const int bodies_number, force_t *forces, const point_t min_point, const point_t max_point ){
     static coord_t size = min_point.x - max_point.x;
 #pragma omp parallel for
     for ( int i = 0; i < bodies_number; ++i ){
@@ -102,7 +102,7 @@ void calculate( const body_t *bodies, const unsigned int bodies_number, force_t 
     }
 }
 
-void movement ( body_t *bodies, const unsigned int bodies_number, const force_t *forces, speed_t *speeds, const duration_t time ){
+void movement ( body_t *bodies, const int bodies_number, const force_t *forces, speed_t *speeds, const duration_t time ){
 #pragma omp parallel for
     for ( int i = 0; i < bodies_number; ++i ){
         move_body(bodies[i], speeds[i], forces[i], time );

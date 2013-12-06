@@ -17,7 +17,7 @@ using namespace std;
 body_t bodies[MAX_BODIES_NUMBER];
 speed_t speed[MAX_BODIES_NUMBER];
 force_t forces[MAX_BODIES_NUMBER];
-unsigned int bodies_number;
+int bodies_number;
 coord_t space_radius;
 duration_t interval;
 
@@ -66,7 +66,7 @@ static void display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glColor3d(1,0,0);
 
-	for ( unsigned int i = 0; i < bodies_number; ++i ) {
+	for ( int i = 0; i < bodies_number; ++i ) {
 		glPushMatrix();
 			glTranslated ( bodies[i].x * coord_multyply, bodies[i].y * coord_multyply, 0.0 );
 			glColor3ub ( bodies[i].red, bodies[i].green, bodies[i].blue );

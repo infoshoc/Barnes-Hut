@@ -128,7 +128,6 @@ const GLfloat high_shininess[] = { 100.0f };
 int main(int argc, char *argv[])
 {
 	read_test( argc, argv, bodies_number, space_radius, bodies, spheres, speed, interval );
-	omp_init_lock(&root->lock);
 
     glutInit(&argc, argv);
     glutInitWindowSize(640,480);

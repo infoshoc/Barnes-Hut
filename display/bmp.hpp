@@ -1,6 +1,5 @@
 #pragma warning ( disable : 4996 )
 
-
 #include <Windows.h>
 #include <string>
 using namespace std;

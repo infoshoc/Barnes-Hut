@@ -10,7 +10,7 @@
 #include <Windows.h>
 using namespace std;
 
-void read_test(const int argc, char *argv[], int &bodies_number, coord_t &space_radius, body_t *bodies, PRGBTRIPLE spheres, speed_t *speed, duration_t &interval ){
+void read_test(const int argc, char *argv[], int &bodies_number, coord_t &space_radius, body_t *bodies, RGBTRIPLE *spheres, speed_t *speed, duration_t &interval ){
     string file_name = argc >= 2 ? string( argv[1] ) : "input.dat";
 
     FILE *fh = fopen ( file_name.c_str(), "r" );
@@ -59,7 +59,7 @@ void write_forces( const int argc, char *argv[], const int bodies_number, const 
     fclose(fh);
 }
 
-void write_bodies ( const int argc, char *argv[], const int bodies_number, const body_t *bodies, const PRGBTRIPLE spheres, const speed_t *speed, const coord_t space_radius ){
+void write_bodies ( const int argc, char *argv[], const int bodies_number, const body_t *bodies, const RGBTRIPLE *spheres, const speed_t *speed, const coord_t space_radius ){
     string file_name = argc >= 4 ? argv[3] : "bodies.txt";
     FILE *fh = fopen ( file_name.c_str(), "w" );
     fprintf ( fh, "%d\n%lf\n", bodies_number, space_radius );

@@ -19,11 +19,13 @@ const unsigned int MAX_BODIES_NUMBER = 30042;
 struct node_t : public body_t{
     bool is_body;
     node_t* child[CHILDREN_NUMBER];
+#ifdef _OPENMP
 	omp_lock_t lock;
+#endif
 } *root = new node_t(); 
 
-void add_body ( node_t *, const body_t&, const point_t, const point_t ) ;
-void push_to_children(node_t *node, const body_t &body, const point_t &min, const point_t &max){
+void add_body ( node_t *, const body_t, const point_t, const point_t ) ;
+void push_to_children(node_t *node, const body_t body, const point_t &min, const point_t &max){
     point_t point[3] = { min, {(min.x+max.x)/2.0,(min.y+max.y)/2.0}, max };
     for ( int y_idx = 1, child_idx = 0; y_idx < BORDERS_NUMBER; ++y_idx ){
         for ( int x_idx = 1; x_idx < BORDERS_NUMBER; ++x_idx, ++child_idx ){
@@ -40,33 +42,48 @@ void push_to_children(node_t *node, const body_t &body, const point_t &min, cons
 			}
             if ( node->child[child_idx] == NULL ){
                 node->child[child_idx] = new node_t();
+#ifdef _OPENMP
 				omp_init_lock(&node->child[child_idx]->lock);
+#endif
             }
+#ifdef _OPENMP
+			omp_unset_lock(&node->lock);
+#endif
             add_body(
                 node->child[child_idx],
                 body,
 				min,
 				max                     
             );
+#ifdef _OPENMP
+			omp_set_lock(&node->lock);
+#endif
 			return;
         }
     }
+#ifdef _DEBUG
+	printf ( "Body was not added\n" );
+#endif
 }
 
-void add_body(node_t *node, const body_t &body, const point_t min, const point_t max){
+void add_body(node_t *node, const body_t body, const point_t min, const point_t max){
 #ifdef _DEBUG
-	printf ( "Thread: %d\n", omp_get_thread_num() );
+	printf ( "Thread: %d\tNode: %u\n", omp_get_thread_num(), node );
 #endif
+#ifdef _OPENMP
 	omp_set_lock(&node->lock);
+#endif
     if ( node->mass < EPS ){
         memcpy ( node, &body, sizeof(body_t) );
         node->is_body = true;
-		omp_unset_lock(&node->lock);	
+#ifdef _OPENMP
+		omp_unset_lock(&node->lock);
+#endif
         return;
     }
     if ( node->is_body ){
-        push_to_children( node, *node, min, max );
         node->is_body = false;
+        push_to_children( node, *node, min, max );
     }
     node->x *= node->mass;
     node->y *= node->mass;
@@ -76,7 +93,9 @@ void add_body(node_t *node, const body_t &body, const point_t min, const point_t
     node->x /= node->mass;
     node->y /= node->mass;
     push_to_children(node, body, min, max );
+#ifdef _OPENMP
 	omp_unset_lock(&node->lock);
+#endif
 }
 
 force_t calculate_force( const node_t node, const body_t &body, const coord_t &size ){
@@ -106,14 +125,14 @@ void build ( body_t *bodies, const int bodies_number, const point_t min_point, c
 }
 void calculate( const body_t *bodies, const int bodies_number, force_t *forces, const point_t min_point, const point_t max_point ){
     static coord_t size = min_point.x - max_point.x;
-#pragma omp parallel for
+#pragma omp parallel for schedule (dynamic)
     for ( int i = 0; i < bodies_number; ++i ){
         forces[i] = calculate_force(*root, bodies[i], size );
     }
 }
 
 void movement ( body_t *bodies, const int bodies_number, const force_t *forces, speed_t *speeds, const duration_t time ){
-#pragma omp parallel for
+#pragma omp parallel for schedule (static)
     for ( int i = 0; i < bodies_number; ++i ){
         move_body(bodies[i], speeds[i], forces[i], time );
     }

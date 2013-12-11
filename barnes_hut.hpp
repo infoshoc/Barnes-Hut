@@ -14,7 +14,7 @@ void calculate(const body_t*, unsigned int, force_t*, const point_t, const point
 
 const int CHILDREN_NUMBER = 4;
 const int BORDERS_NUMBER = 3;
-const unsigned int MAX_BODIES_NUMBER = 30042;
+const unsigned int MAX_BODIES_NUMBER = 500042;
 
 struct node_t : public body_t{
     bool is_body;
@@ -117,7 +117,9 @@ force_t calculate_force( const node_t node, const body_t &body, const coord_t &s
 
 void build ( body_t *bodies, const int bodies_number, const point_t min_point, const point_t max_point ){
     memset(root, 0, sizeof(node_t));
+#ifdef _OPENMP
 	omp_init_lock(&root->lock);
+#endif
 #pragma omp parallel for
     for ( int i = 0; i < bodies_number; ++i ){
         add_body(root, bodies[i], min_point, max_point );

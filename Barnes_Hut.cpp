@@ -12,7 +12,7 @@ duration_t interval;
 coord_t space_radius;
 
 int main( int argc, char **argv ){
-
+	
     read_test(argc, argv, bodies_number, space_radius, bodies, spheres, speed, interval);
 
 	timer_start();

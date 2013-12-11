@@ -36,6 +36,7 @@ int main( int argc, char **argv ){
 	fclose ( inp );
 
 	long double max_relative_value = 0.0;
+	long double average_relative_value = 0.0;
 	unsigned int max_relative_idx;
 
 	for ( unsigned int i = 0; i < body_number; ++i ) {
@@ -61,6 +62,8 @@ int main( int argc, char **argv ){
 
 		absolute = abs ( abs_force[1] - abs_force[0] );
 		relative = abs ( absolute / abs_force[0] );
+
+		average_relative_value += relative;
 		
 		if ( relative > max_relative_value ) {
 			max_relative_value = relative;
@@ -70,11 +73,14 @@ int main( int argc, char **argv ){
 		fprintf ( ver, "Body #%u:\n\tAbsolute:%Lf\n\tRelative:%Lf\n", body_idx[0], absolute, relative );
 	}
 
-	fprintf ( ver, "Maximal Relative Body #%u value = %Lf%%\n", max_relative_idx, max_relative_value );
+	average_relative_value /= body_number;
+	
+	fprintf ( ver, "Maximal Relative Body #%u value = %Lf\n", max_relative_idx, max_relative_value );
+	fprintf ( ver, "Average Relative %Lf\n", average_relative_value );
 
 	fclose ( ver );
 
-	printf ( "%Lf ", max_relative_value );
+	printf ( "%Lf ", average_relative_value );
 
 	return 0;
 }

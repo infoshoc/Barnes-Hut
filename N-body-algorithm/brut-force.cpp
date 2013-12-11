@@ -1,7 +1,7 @@
 #include <cmath>
 #include "rw.hpp"
 
-const unsigned int MAX_BODIES_NUMBER = 30042;
+const unsigned int MAX_BODIES_NUMBER = 100042;
 
 double x[MAX_BODIES_NUMBER], y[MAX_BODIES_NUMBER], mass[MAX_BODIES_NUMBER], speed_x[MAX_BODIES_NUMBER], speed_y[MAX_BODIES_NUMBER], force_x[MAX_BODIES_NUMBER], force_y[MAX_BODIES_NUMBER];
 

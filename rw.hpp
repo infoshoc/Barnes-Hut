@@ -47,7 +47,7 @@ void read_test(const int argc, char *argv[], int &bodies_number, coord_t &space_
 		spheres[i].rgbtRed = (BYTE)red;
     }
 
-	interval = argc >= 3 ? atoi ( argv[2] ) : 1;
+	interval = argc >= 3 ? atof ( argv[2] ) : 1;
 }
 
 void write_forces( const int argc, char *argv[], const int bodies_number, const force_t *forces ){
